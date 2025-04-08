@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "Voting System",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
