@@ -141,65 +141,114 @@
 // // Start Server
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import admin from "firebase-admin";
-import { readFileSync } from "fs";
+// import express from "express";
+// import cors from "cors";
+// import bodyParser from "body-parser";
+// import dotenv from "dotenv";
+// import admin from "firebase-admin";
+// import { readFileSync } from "fs";
 
-dotenv.config();
-const serviceAccount = JSON.parse(readFileSync("./config/firebase-service-key.json", "utf8"));
+// dotenv.config();
+// const serviceAccount = JSON.parse(readFileSync("./config/firebase-service-key.json", "utf8"));
 
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-const app = express();
-const PORT = process.env.PORT || 5000;
+// admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+// const app = express();
+// const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(bodyParser.json());
+// app.use(cors());
+// app.use(bodyParser.json());
 
-const users = [
-  { voterId: "VOTER123", phone: "+918959928588" },
-  { voterId: "VOTER456", phone: "+919876543210" },
-  { voterId: "VOTER789", phone: "+918765432109" },
-];
+// const users = [
+//   { voterId: "VOTER123", phone: "+918959928588" },
+//   { voterId: "VOTER456", phone: "+919876543210" },
+//   { voterId: "VOTER789", phone: "+918765432109" },
+// ];
 
-app.post("/api/verify-otp", async (req, res) => {
-  const { voterId, phone, otpIdToken } = req.body;
+// app.post("/api/verify-otp", async (req, res) => {
+//   const { voterId, phone, otpIdToken } = req.body;
 
-  if (!voterId || !phone || !otpIdToken) {
+//   if (!voterId || !phone || !otpIdToken) {
+//     return res.status(400).json({ message: "Missing required fields" });
+//   }
+
+//   const user = users.find((u) => u.voterId === voterId && u.phone === phone);
+//   if (!user) return res.status(401).json({ message: "Invalid Voter ID or Phone Number" });
+
+//   try {
+//     const decodedToken = await admin.auth().verifyIdToken(otpIdToken);
+//     if (decodedToken.phone_number !== phone) {
+//       return res.status(400).json({ message: "Phone number mismatch" });
+//     }
+//     res.json({ message: "OTP verified successfully!" });
+//   } catch (error) {
+//     console.error("❌ OTP Verification Error:", error);
+//     res.status(400).json({ message: "Invalid OTP", error: error.message });
+//   }
+// });
+
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// app.post("/api/verify-otp", async (req, res) => {
+//   const { voterId, phone, otpIdToken } = req.body;
+
+//   if (!voterId || !phone || !otpIdToken) {
+//     return res.status(400).json({ message: "Missing required fields" });
+//   }
+
+//   const normalize = (p) => p.replace(/\s+/g, "").replace(/^(\+91|91)?/, "");
+
+//   const user = users.find(
+//     (u) => u.voterId === voterId && normalize(u.phone) === normalize(phone)
+//   );
+//   if (!user) {
+//     return res.status(401).json({ message: "Invalid Voter ID or Phone Number" });
+//   }
+
+//   try {
+//     const decodedToken = await admin.auth().verifyIdToken(otpIdToken);
+//     const decodedPhone = normalize(decodedToken.phone_number);
+
+//     if (decodedPhone !== normalize(phone)) {
+//       console.log("❌ Mismatch between decoded and provided phone:", decodedPhone, normalize(phone));
+//       return res.status(400).json({ message: "Phone number mismatch" });
+//     }
+
+//     res.json({ message: "OTP verified successfully!" });
+//   } catch (error) {
+//     console.error("❌ OTP Verification Error:", error);
+//     res.status(400).json({ message: "Invalid OTP", error: error.message});
+//   }
+// });
+
+app.post("/api/verify-email", async (req, res) => {
+  const { voterId, email, idToken } = req.body;
+
+  if (!voterId || !email || !idToken) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  const user = users.find((u) => u.voterId === voterId && u.phone === phone);
-  if (!user) return res.status(401).json({ message: "Invalid Voter ID or Phone Number" });
+  const normalize = (e) => e.trim().toLowerCase();
+
+  const user = users.find(
+    (u) => u.voterId === voterId && normalize(u.email) === normalize(email)
+  );
+
+  if (!user) {
+    return res.status(401).json({ message: "Invalid Voter ID or Email" });
+  }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(otpIdToken);
-    if (decodedToken.phone_number !== phone) {
-      return res.status(400).json({ message: "Phone number mismatch" });
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedEmail = normalize(decodedToken.email);
+
+    if (decodedEmail !== normalize(email)) {
+      console.log("❌ Mismatch between decoded and provided email:", decodedEmail, normalize(email));
+      return res.status(400).json({ message: "Email mismatch" });
     }
-    res.json({ message: "OTP verified successfully!" });
+
+    res.json({ message: "Email verified successfully!" });
   } catch (error) {
-    console.error("❌ OTP Verification Error:", error);
-    res.status(400).json({ message: "Invalid OTP", error: error.message });
+    console.error("❌ Email Verification Error:", error);
+    res.status(400).json({ message: "Invalid ID Token", error: error.message });
   }
 });
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
-// function verifyOTP() {
-//   let otp = document.getElementById('otp').value;
-
-//   window.confirmationResult.confirm(otp)
-//       .then(function (result) {
-//           let user = result.user;
-//           document.getElementById('message').innerText = "Login successful! Welcome " + user.phoneNumber;
-//       })
-//       .catch(function (error) {
-//           console.error("Error verifying OTP", error);
-//           document.getElementById('message').innerText = "Invalid OTP. Please try again.";
-//       });
-// }

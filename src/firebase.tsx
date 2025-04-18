@@ -52,21 +52,48 @@
 
 // export { sendOTP, verifyOTP, auth };
 
+
+// import { initializeApp } from "firebase/app";
+// import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+
+// // Your Firebase configuration
+// const firebaseConfig = {
+//     apiKey: "AIzaSyAMsYujHqeG8yTMsTQKKZq5l8u7dzABJIA",
+//     authDomain: "voting-system-c80e9.web.app",
+//     projectId: "voting-system-c80e9",
+//     storageBucket: "voting-system-c80e9.appspot.com",
+//     messagingSenderId: "143774459644",
+//     appId: "1:143774459644:web:ff5cfeeed2506b9a05d979"
+//   };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+
+// export { auth, signInWithPhoneNumber, RecaptchaVerifier};
+
+
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 
 // Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAMsYujHqeG8yTMsTQKKZq5l8u7dzABJIA",
-    authDomain: "voting-system-c80e9.web.app",
-    projectId: "voting-system-c80e9",
-    storageBucket: "voting-system-c80e9.appspot.com",
-    messagingSenderId: "143774459644",
-    appId: "1:143774459644:web:ff5cfeeed2506b9a05d979"
-  };
+  apiKey: "AIzaSyAMsYujHqeG8yTMsTQKKZq5l8u7dzABJIA",
+  authDomain: "voting-system-c80e9.web.app",
+  projectId: "voting-system-c80e9",
+  storageBucket: "voting-system-c80e9.appspot.com",
+  messagingSenderId: "143774459644",
+  appId: "1:143774459644:web:ff5cfeeed2506b9a05d979"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export { auth, signInWithPhoneNumber, RecaptchaVerifier };
+// Export email auth methods
+export {
+  auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut
+};
