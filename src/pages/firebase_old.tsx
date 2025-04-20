@@ -4,14 +4,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB-V_inMwHhMPHbPi4151fKzhCZcdtXNjw",
-  authDomain: "otpverify2001.firebaseapp.com",
-  projectId: "otpverify2001",
-  storageBucket: "otpverify2001.appspot.com",
-  messagingSenderId: "1091132918208",
-  appId: "1:1091132918208:web:1b45df528967eb3b6da025",
-  measurementId: "G-2W4HTY832Y",
+  apiKey: "AIzaSyAMsYujHqeG8yTMsTQKKZq5l8u7dzABJIA",
+  authDomain: "voting-system-c80e9.firebaseapp.com",
+  projectId: "voting-system-c80e9",
+  storageBucket: "voting-system-c80e9.firebasestorage.app",
+  messagingSenderId: "143774459644",
+  appId: "1:143774459644:web:ff5cfeeed2506b9a05d979",
+  measurementId: "G-K8VNFCY1BD"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
